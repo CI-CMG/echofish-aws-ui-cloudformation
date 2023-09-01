@@ -1,0 +1,171 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Echofish Buckets
+
+Parameters:
+  StackPrefix:
+    Type: String
+  EnvironmentType:
+    Type: String
+  PermissionsBoundary:
+    Type: String
+  DeploymentBucketName:
+    Type: String
+  BucketDrainLambdaVersion:
+    Type: String
+
+
+Conditions:
+  IsProduction:
+    !Equals [!Ref EnvironmentType, prod]
+  IsDev:
+    !Equals [!Ref EnvironmentType, dev]
+  HasPermissionsBoundary:
+    Fn::Not:
+      - Fn::Equals:
+          - ""
+          - !Ref PermissionsBoundary
+
+Mappings:
+  BucketNameMap:
+    UiBucket:
+      Value: echofish-ui
+
+Resources:
+
+  BucketDrainLambdaRole:
+    Type: AWS::IAM::Role
+    Condition: IsDev
+    Properties:
+      PermissionsBoundary:
+        Fn::If:
+          - HasPermissionsBoundary
+          - !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/${PermissionsBoundary}
+          - AWS::NoValue
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Logging
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource: !Sub arn:${AWS::Partition}:logs:*:*:*
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+        - PolicyName: S3Bucket
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                 - Fn::Sub:
+                     - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}/*
+                     - Suffix: !FindInMap [BucketNameMap, UiBucket, Value]
+                Action:
+                  - s3:DeleteObject
+              - Effect: Allow
+                Resource:
+                  - Fn::Sub:
+                      - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}
+                      - Suffix: !FindInMap [BucketNameMap, UiBucket, Value]
+                Action:
+                  - s3:ListBucket
+
+  BucketDrainLambda:
+    Type: AWS::Lambda::Function
+    Condition: IsDev
+    Properties:
+      Description: Empty Bucket
+      Code:
+        S3Bucket: !Ref DeploymentBucketName
+        S3Key: !Sub lambda/aws-cf-custom-resource-bucket-drain-${BucketDrainLambdaVersion}-lambda.zip
+      Handler: edu.colorado.cires.mgg.aws.cf.bucketdrain.EmptyBucketLambda::handleRequest
+      Runtime: java11
+      MemorySize: 1024
+      Timeout: 900
+      Role: !GetAtt BucketDrainLambdaRole.Arn
+      Environment:
+        Variables:
+          TIMEOUT_SECONDS: 900
+
+
+  UiBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName:
+        Fn::Sub:
+          - ${StackPrefix}-${AWS::AccountId}-${Suffix}
+          - Suffix: !FindInMap [BucketNameMap, UiBucket, Value]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  UiBucketBucketDrain:
+    Type: Custom::DevOutputBucket
+    Condition: IsDev
+    Properties:
+      ServiceToken: !GetAtt BucketDrainLambda.Arn
+      bucketName: !Ref UiBucket
+
+  UiBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: IsDev
+    Properties:
+      Bucket: !Ref UiBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowPublicRead,
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: s3:GetObject
+            Resource:
+              - Fn::Sub:
+                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}/*
+                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
+          - Sid: AllowPublicList,
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: s3:ListBucket
+            Resource:
+              - Fn::Sub:
+                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}
+                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
+          - Sid: DevUserBucketAllowAll,
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:user/${DevOutputBucketUserAlias}
+            Action: 's3:*'
+            Resource:
+              - Fn::Sub:
+                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}
+                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
+          - Sid: DevUserObjectAllowAll,
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:user/${DevOutputBucketUserAlias}
+            Action: 's3:*'
+            Resource:
+              - Fn::Sub:
+                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}/*
+                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
+
+#######################################################
+Outputs:
+  UiBucketName:
+    Value: !Ref UiBucket
+
+

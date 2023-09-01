@@ -1,0 +1,2 @@
+id,group,artifact,version,timestamp,classifier,extension,directory
+CustomResourceLambda,io.github.ci-cmg.echofish,echofish-aws-custom-resource-lambda,@CustomResourceLambda.version@,@dashTimestamp@,lambda,zip,lambda

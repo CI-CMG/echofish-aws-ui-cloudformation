@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: EchoFish Stack
+
+Parameters:
+  StackPrefix:
+    Description: A prefix that identifies this stack
+    Type: String
+  ZarrBucketName:
+    Description: The bucket name for the public dataset bucket
+    Type: String
+  RolePermissionsBoundary:
+    Description: An optional permissions boundary to associate with the Lambda role
+    Type: String
+    Default: ""
+  LogRetentionInDays:
+    Description: The number of days to keep CloudWatch logs
+    Type: Number
+    MinValue: 0
+    Default: 30
+
+Conditions:
+  CustomResourceLambdaIsRelease:
+    Fn::Equals:
+      - @CustomResourceLambda.version@
+      - Fn::Join:
+          - ""
+          - Fn::Split:
+              - "-SNAPSHOT"
+              - @CustomResourceLambda.version@
+  BucketDrainLambdaIsRelease:
+    Fn::Equals:
+      - @CruiseSplitterLambda.version@
+      - Fn::Join:
+          - ""
+          - Fn::Split:
+              - "-SNAPSHOT"
+              - @CruiseSplitterLambda.version@
+  UiIsRelease:
+    Fn::Equals:
+      - @ui.version@
+      - Fn::Join:
+          - ""
+          - Fn::Split:
+              - "-SNAPSHOT"
+              - @ui.version@
+
+Resources:
+
+  BucketStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        StackPrefix: !Ref StackPrefix
+        EnvironmentType:
+          Fn::ImportValue: !Sub ${StackPrefix}-echofish-environment-type
+        PermissionsBoundary: !Ref RolePermissionsBoundary
+        DeploymentBucketName:
+          Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+        BucketDrainLambdaVersion: !If [ BucketDrainLambdaIsRelease, @BucketDrainLambda.version@, @BucketDrainLambda.version@@dashTimestamp@ ]
+      TemplateURL:
+        Fn::Sub:
+          - https://${DeploymentBucketName}.s3.${AWS::Region}.amazonaws.com/stack/nested/bucket-stack.yaml
+          - DeploymentBucketName:
+              Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+
+  CloudFrontStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        UiBucketName:
+          Fn::GetAtt:
+            - BucketStack
+            - Outputs.UiBucketName
+      TemplateURL:
+        Fn::Sub:
+          - https://${DeploymentBucketName}.s3.${AWS::Region}.amazonaws.com/stack/nested/cloudfront-stack.yaml
+          - DeploymentBucketName:
+              Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+
+  UiStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        DeploymentBucketName:
+          Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+        LambdaRolePermissionsBoundary: !Ref RolePermissionsBoundary
+        LogRetentionInDays: !Ref LogRetentionInDays
+        Version: !If [UiIsRelease, @ui.version@, @ui.version@@dashTimestamp@]
+        UiBucketName:
+          Fn::GetAtt:
+            - BucketStack
+            - Outputs.UiBucketName
+#        RestApiUrl:
+#          Fn::GetAtt:
+#            - GatewayStack
+#            - Outputs.RestApiUrl
+        MvtBaseUrl:
+          Fn::GetAtt:
+            - BucketStack
+            - Outputs.MvtBucketBaseUrl
+#        GeoHashBaseUrl:
+#          Fn::GetAtt:
+#            - BucketStack
+#            - Outputs.GeoHashBucketBaseUrl
+        ZarrBaseUrl:
+          Fn::GetAtt:
+            - BucketStack
+            - Outputs.ZarrStoreBucketBaseUrl
+        StackPrefix: !Ref StackPrefix
+      TemplateURL:
+        Fn::Sub:
+          - https://${DeploymentBucketName}.s3.${AWS::Region}.amazonaws.com/stack/nested/ui-stack.yaml
+          - DeploymentBucketName:
+              Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+
+#  ApiLambdaStack:
+#    Type: AWS::CloudFormation::Stack
+#    Condition: IsDeployAdminResources
+#    Properties:
+#      Parameters:
+#        DeploymentBucketName:
+#          Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+#        LambdaRolePermissionsBoundary: !Ref LambdaRolePermissionsBoundary
+#        ApiLambdaMemorySize: !Ref ApiLambdaMemorySize
+#        ApiLambdaTimeout: !Ref ApiLambdaTimeout
+#        LogRetentionInDays: !Ref LogRetentionInDays
+#        Version: !If [ApiIsRelease, @api.version@, @api.version@@dashTimestamp@]
+#        ApiLambdaMaxConcurrency: !Ref ApiLambdaMaxConcurrency
+#      TemplateURL:
+#        Fn::Sub:
+#          - https://${DeploymentBucketName}.s3.${AWS::Region}.amazonaws.com/stack/nested/api-stack.yaml
+#          - DeploymentBucketName:
+#              Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
+#
+#  GatewayStack:
+#    Type: AWS::CloudFormation::Stack
+#    Condition: IsDeployAdminResources
+#    Properties:
+#      Parameters:
+#        LambdaRolePermissionsBoundary: !Ref LambdaRolePermissionsBoundary
+#        ApiLambdaArn:
+#          Fn::GetAtt:
+#            - ApiLambdaStack
+#            - Outputs.ApiLambdaArn
+#        StackPrefix: !Ref StackPrefix
+#      TemplateURL:
+#        Fn::Sub:
+#          - https://${DeploymentBucketName}.s3.${AWS::Region}.amazonaws.com/stack/nested/gateway-stack.yaml
+#          - DeploymentBucketName:
+#              Fn::ImportValue: !Sub ${StackPrefix}-echofish-deployment-bucket
