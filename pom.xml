@@ -48,6 +48,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <sign.serverId>gpg-sign</sign.serverId>
+    <dashTimestamp>-${maven.build.timestamp}</dashTimestamp>
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
     <BucketDrainLambda.version>1.0.0-SNAPSHOT</BucketDrainLambda.version>
     <CustomResourceLambda.version>1.0.0-SNAPSHOT</CustomResourceLambda.version>
