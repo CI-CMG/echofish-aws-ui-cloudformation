@@ -4,11 +4,11 @@
     "ParameterValue": "my-stack-prefix matches deployment"
   },
   {
-    "ParameterKey": "LambdaRolePermissionsBoundary",
+    "ParameterKey": "RolePermissionsBoundary",
     "ParameterValue": "The required CU AWS Boundary"
   },
   {
-    "ParameterKey": "DataSetBucketName",
+    "ParameterKey": "ZarrBucketName",
     "ParameterValue": "The required bucket name for the public data set"
   }
 ]

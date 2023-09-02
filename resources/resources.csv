@@ -1,2 +1,4 @@
 id,group,artifact,version,timestamp,classifier,extension,directory
 CustomResourceLambda,io.github.ci-cmg.echofish,echofish-aws-custom-resource-lambda,@CustomResourceLambda.version@,@dashTimestamp@,lambda,zip,lambda
+BucketDrainLambda,io.github.ci-cmg.aws,aws-cf-custom-resource-bucket-drain,@BucketDrainLambda.version@,@dashTimestamp@,lambda,zip,lambda
+ui,edu.colorado.cires.cmg.echofish,echofish-aws-ui,@ui.version@,@dashTimestamp@,zip,zip,ui

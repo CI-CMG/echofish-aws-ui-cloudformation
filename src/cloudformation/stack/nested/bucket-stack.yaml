@@ -12,13 +12,16 @@ Parameters:
     Type: String
   BucketDrainLambdaVersion:
     Type: String
+  OutputBucketName:
+    Type: String
+    Default: ""
 
 
 Conditions:
   IsProduction:
-    !Equals [!Ref EnvironmentType, prod]
+    !Equals [ !Ref EnvironmentType, prod ]
   IsDev:
-    !Equals [!Ref EnvironmentType, dev]
+    !Equals [ !Ref EnvironmentType, dev ]
   HasPermissionsBoundary:
     Fn::Not:
       - Fn::Equals:
@@ -29,6 +32,8 @@ Mappings:
   BucketNameMap:
     UiBucket:
       Value: echofish-ui
+    DevOutputBucket:
+      Value: echofish-dev-output
 
 Resources:
 
@@ -167,5 +172,13 @@ Resources:
 Outputs:
   UiBucketName:
     Value: !Ref UiBucket
+  OutputBucketName:
+    Value:
+      Fn::If:
+        - IsProduction
+        - !Ref OutputBucketName
+        - Fn::Sub:
+            - ${StackPrefix}-${AWS::AccountId}-${Suffix}
+            - Suffix: !FindInMap [ BucketNameMap, DevOutputBucket, Value ]
 
 

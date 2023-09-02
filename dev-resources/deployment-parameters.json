@@ -5,7 +5,7 @@
   },
   {
     "ParameterKey": "DeploymentBucketName",
-    "ParameterValue": "@user.name@-dev-echofish-deploy"
+    "ParameterValue": "@user.name@-dev-echofish-ui-deploy"
   },
   {
     "ParameterKey": "EnvironmentType",

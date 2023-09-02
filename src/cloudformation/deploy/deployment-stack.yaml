@@ -33,10 +33,10 @@ Outputs:
     Description: The bucket used to deploy cloudformation resources
     Value: !Ref DeploymentBucketName
     Export:
-      Name: !Sub ${StackPrefix}-echofish-deployment-bucket
+      Name: !Sub ${StackPrefix}-echofish-ui-deployment-bucket
   EnvironmentTypeOutput:
     Description: The deployment environment type
     Value: !Ref EnvironmentType
     Export:
-      Name: !Sub ${StackPrefix}-echofish-environment-type
+      Name: !Sub ${StackPrefix}-echofish-ui-environment-type
 

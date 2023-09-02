@@ -54,6 +54,7 @@
 
     <BucketDrainLambda.version>1.0.0-SNAPSHOT</BucketDrainLambda.version>
     <CustomResourceLambda.version>1.0.0-SNAPSHOT</CustomResourceLambda.version>
+    <ui.version>1.0.0-SNAPSHOT</ui.version>
   </properties>
 
   <repositories>
@@ -93,6 +94,13 @@
       <artifactId>echofish-aws-custom-resource-lambda</artifactId>
       <version>${CustomResourceLambda.version}</version>
       <classifier>lambda</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ci-cmg.echofish</groupId>
+      <artifactId>echofish-aws-ui</artifactId>
+      <version>${ui.version}</version>
+      <classifier>zip</classifier>
       <type>zip</type>
     </dependency>
   </dependencies>

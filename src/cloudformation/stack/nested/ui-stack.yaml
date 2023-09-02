@@ -8,20 +8,14 @@ Parameters:
     Type: String
   LambdaRolePermissionsBoundary:
     Type: String
-  LogRetentionInDays:
-    Type: Number
-  Version:
+  UiVersion:
     Type: String
-#  RestApiUrl:
-#    Type: String
+  UiDeploymentLambdaVersion:
+    Type: String
   MvtBaseUrl:
     Type: String
   ZarrBaseUrl:
     Type: String
-  GeoHashBaseUrl:
-    Type: String
-#  OAuthClientId:
-#    Type: String
   StackPrefix:
     Type: String
 
@@ -85,16 +79,14 @@ Resources:
     Type: Custom::UiDeployment
     Properties:
       ServiceToken: !GetAtt UiDeploymentLambda.Arn
-      physicalResourceId: !Ref Version
+      physicalResourceId: !Ref UiDeploymentLambdaVersion
       uiBucket: !Ref UiBucketName
       deploymentBucket: !Ref DeploymentBucketName
-      artifactKey: !Sub ui/echofish-aws-ui-${Version}-zip.zip
-      apiBaseUrl: !Ref RestApiUrl
+      artifactKey: !Sub ui/echofish-aws-ui-${UiVersion}-zip.zip
+      apiBaseUrl: 'TODO DELETE ME'
       mvtBaseUrl: !Ref MvtBaseUrl
       zarrBaseUrl: !Ref ZarrBaseUrl
-      geoHashBaseUrl: !Ref GeoHashBaseUrl
-#      tokenBaseUrl: !Ref TokenProviderUrl
-#      clientId: !Ref OAuthClientId
+      geoHashBaseUrl: 'TODO DELETE ME'
       stackPrefix: !Ref StackPrefix
 
   UiDeploymentLambda:
@@ -103,7 +95,7 @@ Resources:
       Description: Echofish UI Frontend
       Code:
         S3Bucket: !Ref DeploymentBucketName
-        S3Key: !Sub lambda/echofish-aws-custom-resource-lambda-${Version}-lambda.zip
+        S3Key: !Sub lambda/echofish-aws-custom-resource-lambda-${UiDeploymentLambdaVersion}-lambda.zip
       Handler: edu.colorado.cires.cmg.echofish.aws.lambda.resource.DeployUiLambda::handleRequest
       Runtime: java11
       MemorySize: 512
