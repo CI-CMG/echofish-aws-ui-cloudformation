@@ -101,4 +101,7 @@ Resources:
       MemorySize: 512
       Timeout: 120
       Role: !GetAtt UiDeploymentLambdaRole.Arn
+      Environment:
+        Variables:
+          TIMEOUT_SECONDS: 120
 

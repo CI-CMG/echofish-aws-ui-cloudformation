@@ -217,6 +217,7 @@
         <version>3.2.0</version>
         <configuration>
           <tarLongFileMode>posix</tarLongFileMode>
+          <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
             <descriptor>src/assembly/dist.xml</descriptor>
           </descriptors>
@@ -231,6 +232,8 @@
           </execution>
         </executions>
       </plugin>
+
+
       <plugin>
         <groupId>pl.project13.maven</groupId>
         <artifactId>git-commit-id-plugin</artifactId>
@@ -318,13 +321,34 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>cloudformation</id>
+            <id>resources</id>
             <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/resources</outputDirectory>
+              <useDefaultDelimiters>false</useDefaultDelimiters>
+              <delimiters>
+                <delimiter>@</delimiter>
+              </delimiters>
+              <resources>
+                <resource>
+                  <directory>resources</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>cloudformation</id>
+            <phase>generate-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -336,7 +360,27 @@
               </delimiters>
               <resources>
                 <resource>
-                  <directory>cloudformation</directory>
+                  <directory>src${file.separator}cloudformation</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>dev-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/dev-resources</outputDirectory>
+              <useDefaultDelimiters>false</useDefaultDelimiters>
+              <delimiters>
+                <delimiter>@</delimiter>
+              </delimiters>
+              <resources>
+                <resource>
+                  <directory>dev-resources</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>

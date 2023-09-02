@@ -29,12 +29,12 @@ Conditions:
               - @CustomResourceLambda.version@
   BucketDrainLambdaIsRelease:
     Fn::Equals:
-      - @CruiseSplitterLambda.version@
+      - @BucketDrainLambda.version@
       - Fn::Join:
           - ""
           - Fn::Split:
               - "-SNAPSHOT"
-              - @CruiseSplitterLambda.version@
+              - @BucketDrainLambda.version@
   UiIsRelease:
     Fn::Equals:
       - @ui.version@
@@ -85,7 +85,6 @@ Resources:
         DeploymentBucketName:
           Fn::ImportValue: !Sub ${StackPrefix}-echofish-ui-deployment-bucket
         LambdaRolePermissionsBoundary: !Ref RolePermissionsBoundary
-        LogRetentionInDays: !Ref LogRetentionInDays
         UiVersion: !If [UiIsRelease, @ui.version@, @ui.version@@dashTimestamp@]
         UiDeploymentLambdaVersion: !If [ CustomResourceLambdaIsRelease, @CustomResourceLambda.version@, @CustomResourceLambda.version@@dashTimestamp@ ]
         UiBucketName:

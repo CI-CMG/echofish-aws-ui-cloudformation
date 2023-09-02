@@ -149,24 +149,6 @@ Resources:
               - Fn::Sub:
                   - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}
                   - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
-          - Sid: DevUserBucketAllowAll,
-            Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:user/${DevOutputBucketUserAlias}
-            Action: 's3:*'
-            Resource:
-              - Fn::Sub:
-                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}
-                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
-          - Sid: DevUserObjectAllowAll,
-            Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:user/${DevOutputBucketUserAlias}
-            Action: 's3:*'
-            Resource:
-              - Fn::Sub:
-                  - arn:${AWS::Partition}:s3:::${StackPrefix}-${AWS::AccountId}-${Suffix}/*
-                  - Suffix: !FindInMap [ BucketNameMap, UiBucket, Value ]
 
 #######################################################
 Outputs:

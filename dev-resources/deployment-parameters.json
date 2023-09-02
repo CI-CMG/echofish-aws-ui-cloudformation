@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "StackPrefix",
-    "ParameterValue": "@user.name@-dev-echofish"
+    "ParameterValue": "@user.name@-dev-echofish-ui"
   },
   {
     "ParameterKey": "DeploymentBucketName",

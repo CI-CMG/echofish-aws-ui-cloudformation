@@ -76,21 +76,21 @@ will be used to identify the stack.
 
 Unzip the CloudFormation artifact bundle:
 ```bash
-unzip echofish-aws-cloudformation-VERSION.zip
+unzip echofish-aws-ui-cloudformation-VERSION.zip
 ``` 
 
 If you are using the AWS console (web page) to set up the stack, select the 
-echofish-aws-cloudformation-VERSION/deploy/deployment-stack.yaml file to upload.
+echofish-aws-ui-cloudformation-VERSION/deploy/deployment-stack.yaml file to upload.
 
 Otherwise, if you are using the AWS CLI to deploy, create a file, deployment-parameters.json.  There is a
-template at echofish-aws-cloudformation-VERSION/deploy/deployment-parameters-template.json.  
+template at echofish-aws-ui-cloudformation-VERSION/deploy/deployment-parameters-template.json.  
 
 Run the following to deploy the deployment stack, using an appropriate name for STACK_NAME:
 ```bash
 aws cloudformation create-stack \ 
   --profile echofish \
   --stack-name STACK_NAME \
-  --template-body file://echofish-aws-cloudformation-VERSION/deploy/deployment-stack.yaml \
+  --template-body file://echofish-aws-ui-cloudformation-VERSION/deploy/deployment-stack.yaml \
   --parameters file://deployment-parameters.json
 ```
 
@@ -101,12 +101,12 @@ aws cloudformation create-stack \
 
 Unzip the CloudFormation artifact bundle:
 ```bash
-unzip echofish-aws-cloudformation-VERSION.zip
+unzip echofish-aws-ui-cloudformation-VERSION.zip
 ``` 
 
 Synchronize your artifacts to the deployment area, replace BUCKET_NAME with the deployment bucket:
 ```bash
-aws --profile echofish s3 sync echofish-aws-cloudformation-VERSION s3://BUCKET_NAME/
+aws --profile echofish s3 sync echofish-aws-ui-cloudformation-VERSION s3://BUCKET_NAME/
 ```
 
 If you are using the AWS console (web page) to set up the stack, use the following url, replace BUCKET_NAME with the deployment bucket:
@@ -115,7 +115,7 @@ https://s3.amazonaws.com/BUCKET_NAME/stack/echofish-stack.yaml
 ```
 
 Otherwise, if you are using the AWS CLI to deploy, create a file, echofish-parameters.json.  There is a
-template at echofish-aws-cloudformation-VERSION/stack/echofish-parameters-template.json. 
+template at echofish-aws-ui-cloudformation-VERSION/stack/echofish-parameters-template.json. 
 
 Run the following to deploy the stack, using an appropriate name for STACK_NAME, replace BUCKET_NAME with the deployment bucket:
 ```bash
@@ -145,7 +145,7 @@ Run the following to create-or-update the stack:
 ```bash
 # [1] in the parent directory do a:
 mvn clean install
-# [2] in the echofish-aws-cloudformation directory:
+# [2] in the echofish-aws-ui-cloudformation directory:
 saml2aws -a echofish login
 ./deploy-create.sh  # or "./deploy-sync.sh" if already created
 ./stack-create.sh   # or "./stack-update.sh" if you want to update existing stack
