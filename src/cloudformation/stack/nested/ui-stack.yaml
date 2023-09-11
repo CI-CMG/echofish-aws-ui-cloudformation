@@ -83,10 +83,8 @@ Resources:
       uiBucket: !Ref UiBucketName
       deploymentBucket: !Ref DeploymentBucketName
       artifactKey: !Sub ui/echofish-aws-ui-${UiVersion}-zip.zip
-      apiBaseUrl: 'TODO DELETE ME'
-      mvtBaseUrl: !Ref MvtBaseUrl
       zarrBaseUrl: !Ref ZarrBaseUrl
-      geoHashBaseUrl: 'TODO DELETE ME'
+      contextRoot: ''
       stackPrefix: !Ref StackPrefix
 
   UiDeploymentLambda:
