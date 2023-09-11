@@ -85,6 +85,7 @@ Resources:
       artifactKey: !Sub ui/echofish-aws-ui-${UiVersion}-zip.zip
       zarrBaseUrl: !Ref ZarrBaseUrl
       contextRoot: ''
+      version: !Ref UiVersion
       stackPrefix: !Ref StackPrefix
 
   UiDeploymentLambda:
