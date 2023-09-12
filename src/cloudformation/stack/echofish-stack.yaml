@@ -5,8 +5,8 @@ Parameters:
   StackPrefix:
     Description: A prefix that identifies this stack
     Type: String
-  ZarrBucketName:
-    Description: The bucket name for the public dataset bucket
+  ZarrBaseUrl:
+    Description: The bucket HTTPS URL for the public dataset bucket
     Type: String
   RolePermissionsBoundary:
     Description: An optional permissions boundary to associate with the Lambda role
@@ -50,7 +50,6 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        OutputBucketName: !Ref ZarrBucketName
         EnvironmentType:
           Fn::ImportValue: !Sub ${StackPrefix}-echofish-ui-environment-type
         StackPrefix: !Ref StackPrefix
@@ -91,14 +90,7 @@ Resources:
           Fn::GetAtt:
             - BucketStack
             - Outputs.UiBucketName
-        MvtBaseUrl:
-          Fn::GetAtt:
-            - BucketStack
-            - Outputs.OutputBucketName
-        ZarrBaseUrl:
-          Fn::GetAtt:
-            - BucketStack
-            - Outputs.OutputBucketName
+        ZarrBaseUrl: !Ref ZarrBaseUrl
         StackPrefix: !Ref StackPrefix
       TemplateURL:
         Fn::Sub:

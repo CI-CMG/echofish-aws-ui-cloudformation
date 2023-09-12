@@ -8,7 +8,7 @@
     "ParameterValue": "CIRES_Admin_PermissionBoundary"
   },
   {
-    "ParameterKey": "ZarrBucketName",
-    "ParameterValue": "dev"
+    "ParameterKey": "ZarrBaseUrl",
+    "ParameterValue": "https://@user.name@-dev-echofish-118234403147-echofish-dev-output.s3.us-west-2.amazonaws.com"
   }
 ]

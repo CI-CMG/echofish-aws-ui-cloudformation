@@ -12,8 +12,6 @@ Parameters:
     Type: String
   UiDeploymentLambdaVersion:
     Type: String
-  MvtBaseUrl:
-    Type: String
   ZarrBaseUrl:
     Type: String
   StackPrefix:

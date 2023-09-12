@@ -8,7 +8,7 @@
     "ParameterValue": "The required CU AWS Boundary"
   },
   {
-    "ParameterKey": "ZarrBucketName",
-    "ParameterValue": "The required bucket name for the public data set"
+    "ParameterKey": "ZarrBaseUrl",
+    "ParameterValue": "The bucket HTTPS URL for the public dataset bucket"
   }
 ]

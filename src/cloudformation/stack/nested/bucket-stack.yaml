@@ -12,9 +12,6 @@ Parameters:
     Type: String
   BucketDrainLambdaVersion:
     Type: String
-  OutputBucketName:
-    Type: String
-    Default: ""
 
 
 Conditions:
@@ -154,13 +151,5 @@ Resources:
 Outputs:
   UiBucketName:
     Value: !Ref UiBucket
-  OutputBucketName:
-    Value:
-      Fn::If:
-        - IsProduction
-        - !Ref OutputBucketName
-        - Fn::Sub:
-            - ${StackPrefix}-${AWS::AccountId}-${Suffix}
-            - Suffix: !FindInMap [ BucketNameMap, DevOutputBucket, Value ]
 
 
