@@ -52,6 +52,8 @@
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
+    <javadoc.version>3.3.1</javadoc.version>
+
     <BucketDrainLambda.version>1.0.1</BucketDrainLambda.version>
     <CustomResourceLambda.version>1.0.0</CustomResourceLambda.version>
     <ui.version>1.0.0</ui.version>
@@ -161,6 +163,11 @@
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${javadoc.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -187,7 +194,6 @@
           <releaseProfiles>release,site-publish</releaseProfiles>
           <goals>deploy site</goals>
           <tagNameFormat>v@{project.version}</tagNameFormat>
-          <arguments>-Pdep-check -D${sign.serverId}</arguments>
         </configuration>
       </plugin>
 
