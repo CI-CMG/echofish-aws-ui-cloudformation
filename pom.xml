@@ -28,10 +28,10 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:CI-CMG/eechofish-aws-ui-cloudformation.git</connection>
-    <developerConnection>scm:git:git@github.com:CI-CMG/eechofish-aws-ui-cloudformation.git
+    <connection>scm:git:git@github.com:CI-CMG/echofish-aws-ui-cloudformation.git</connection>
+    <developerConnection>scm:git:git@github.com:CI-CMG/echofish-aws-ui-cloudformation.git
     </developerConnection>
-    <url>https://github.com/CI-CMG/eechofish-aws-ui-cloudformation</url>
+    <url>https://github.com/CI-CMG/echofish-aws-ui-cloudformation</url>
   </scm>
 
   <distributionManagement>
