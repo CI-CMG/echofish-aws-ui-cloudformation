@@ -9,6 +9,6 @@
   },
   {
     "ParameterKey": "ZarrBaseUrl",
-    "ParameterValue": "https://@user.name@-dev-echofish-118234403147-echofish-dev-output.s3.us-west-2.amazonaws.com"
+    "ParameterValue": "https://noaa-wcsd-zarr-pds.s3.us-east-1.amazonaws.com"
   }
 ]
